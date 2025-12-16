@@ -21,7 +21,14 @@ const authUser = async (req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            token: generateToken(user._id),
+        });
+        
+        // Set token in HTTP-only cookie
+        res.cookie("token", generateToken(user._id), {
+            httpOnly: true,
+            secure: true, // true for production (HTTPS)
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
     } else {
         res.status(401).json({ message: 'Invalid email or password' });
