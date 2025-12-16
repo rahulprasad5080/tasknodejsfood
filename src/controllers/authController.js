@@ -16,19 +16,19 @@ const authUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
-        res.json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            isAdmin: user.isAdmin,
-        });
-        
         // Set token in HTTP-only cookie
         res.cookie("token", generateToken(user._id), {
             httpOnly: true,
             secure: true, // true for production (HTTPS)
             sameSite: "none",
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
         });
     } else {
         res.status(401).json({ message: 'Invalid email or password' });
@@ -58,6 +58,14 @@ const registerUser = async (req, res) => {
     });
 
     if (user) {
+        // Set token in HTTP-only cookie
+        res.cookie("token", generateToken(user._id), {
+            httpOnly: true,
+            secure: true, // true for production (HTTPS)
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
         res.status(201).json({
             _id: user._id,
             name: user.name,
