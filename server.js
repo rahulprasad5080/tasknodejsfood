@@ -8,12 +8,13 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.set("trust proxy", 1);
 
 app.use(express.json());
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 app.use(cors({
-    origin: "https://foodreactjs.vercel.app",
+    origin: ["https://foodreactjs.vercel.app"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
